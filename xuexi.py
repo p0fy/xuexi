@@ -14,8 +14,8 @@ class xxqg():
         flag = True
         #首先判断是不是活跃时间
         now_time = datetime.datetime.now().time()
-        active_time_start = ["06:00:00","12:00:00","20:00:00"]
-        active_time_end = ["08:30:00", "14:00:00", "22:30:00"]
+        active_time_start = ["20:00:00"]
+        active_time_end = ["22:30:00"]
         for i in range(0,len(active_time_start)):
             start = datetime.datetime.strptime(active_time_start[i],'%H:%M:%S').time()
             end = datetime.datetime.strptime(active_time_end[i], '%H:%M:%S').time()
