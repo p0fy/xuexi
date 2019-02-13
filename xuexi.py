@@ -11,7 +11,7 @@ class xxqg():
         self.broswer = webdriver.Chrome()
 
     def active_detect(self):
-        flag = True
+        flag = False
         #首先判断是不是活跃时间
         now_time = datetime.datetime.now().time()
         active_time_start = ["20:00:00"]
@@ -27,12 +27,13 @@ class xxqg():
 
 
     # 登录
-    def login(self):
+    def login(self,time):
         self.broswer.get("https://pc.xuexi.cn/points/login.html?ref=https://www.xuexi.cn/")
         self.broswer.maximize_window()
         self.broswer.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        #screen_shot = self.broswer.get_screenshot_as_file('qrcode.png')
         print("请打开学习强国APP扫描二维码登录\n")
-        if (WebDriverWait(self.broswer, 60, 0.5).until(lambda x: x.find_element_by_id("Cds1ok08g8ns00").is_displayed())) == True:
+        if (WebDriverWait(self.broswer,time, 0.5).until(lambda x: x.find_element_by_id("Cds1ok08g8ns00").is_displayed())) == True:
             print("登陆成功！\n")
         else:
             print("登录出现问题，请查看网络连接\n")
