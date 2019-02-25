@@ -1,21 +1,26 @@
 import datetime
+from PIL import Image
 from selenium import webdriver
+from selenium.webdriver.support.wait import WebDriverWait
 from random import randint
 from time import sleep
-from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.chrome.options import Options
 
 
 class xxqg():
 
     def __init__(self):
-        self.broswer = webdriver.Chrome()
+        #self.broswer = webdriver.Chrome()
+        chrome_options = Options()
+        chrome_options.add_argument('--headless')
+        self.broswer = webdriver.Chrome(options=chrome_options)
 
     def active_detect(self):
-        flag = False
+        flag = True
         #首先判断是不是活跃时间
         now_time = datetime.datetime.now().time()
-        active_time_start = ["20:00:00"]
-        active_time_end = ["22:30:00"]
+        active_time_start = ["06:00:00","12:00:00","20:00:00"]
+        active_time_end = ["08:30:00","14:00:00","22:30:00"]
         for i in range(0,len(active_time_start)):
             start = datetime.datetime.strptime(active_time_start[i],'%H:%M:%S').time()
             end = datetime.datetime.strptime(active_time_end[i], '%H:%M:%S').time()
@@ -26,17 +31,39 @@ class xxqg():
         return flag
 
 
+    # 获取二维码
+    def getQRCode(self):
+        self.broswer.get("https://pc.xuexi.cn/points/login.html?ref=https://www.xuexi.cn/index.html")
+        QRCodeTemp = self.broswer.find_elements_by_tag_name('iframe')[2]
+        self.broswer.switch_to.frame(QRCodeTemp)
+        return self.broswer.find_element_by_css_selector(".login_content>.login_body>.login_qrcode>.login_qrcode_content>img").get_attribute("src")
+
+    # 二进制转换
+    def imgio(self,img_data):
+        with open("QRCode.png","wb+")as imgfile:
+            imgfile.write(img_data)
+            print("二维码已获取")
+
+
+
+    # 生成二维码
+    def QRShow(self):
+        import base64
+        Base64Data = self.getQRCode()
+        data = Base64Data.split(",")[-1]
+        img_binary = base64.b64decode(data)
+        self.imgio(img_binary)
+        QRPic = Image.open('QRCode.png')
+        QRPic.show()
+
     # 登录
-    def login(self,time):
-        self.broswer.get("https://pc.xuexi.cn/points/login.html?ref=https://www.xuexi.cn/")
-        self.broswer.maximize_window()
-        self.broswer.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        #screen_shot = self.broswer.get_screenshot_as_file('qrcode.png')
+    def login(self):
+        self.QRShow()
         print("请打开学习强国APP扫描二维码登录\n")
-        if (WebDriverWait(self.broswer,time, 0.5).until(lambda x: x.find_element_by_id("Cds1ok08g8ns00").is_displayed())) == True:
+        if (WebDriverWait(self.broswer,60, 0.5).until(lambda x: x.find_element_by_id("Cds1ok08g8ns00").is_displayed())) == True:
             print("登陆成功！\n")
         else:
-            print("登录出现问题，请查看网络连接\n")
+            print("登录出现问题，请查看网络连接，或者二维码已失效\n")
 
 
     # 自动浏览学习强国

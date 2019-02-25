@@ -11,23 +11,20 @@
 
 from xuexi import xxqg
 from time import sleep
-#from selenium.webdriver.chrome.options import Options
 
-'''
-chrome_options=Options()
-chrome_options.add_argument('--headless')
-broswer = webdriver.Chrome(options=chrome_options)
-'''
+
 
 
 if __name__ == '__main__':
     study = xxqg()
+    study.login()
+    """
     while(True):
         try:
             active_flag = study.active_detect()
             if active_flag:
-                study.login(60)
-                study.auto_browse()
+                study.login()
+                #study.auto_browse()
             else:
                 print('还不到活跃Buff加成时间，再等一会^.^')
                 study.broswer.get("https://www.xuexi.cn/")
@@ -35,3 +32,4 @@ if __name__ == '__main__':
         except Exception:
             continue
         continue
+    """
